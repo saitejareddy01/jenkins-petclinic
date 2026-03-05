@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean test -Dexclude=**/*IntegrationTests.java'
+                  sh 'mvn clean test -Dexclude=**/*PostgresIntegrationTests.java,**/*MySqlIntegrationTests.java'
             }
         }
 
