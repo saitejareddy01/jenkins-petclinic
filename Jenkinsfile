@@ -1,6 +1,11 @@
 pipeline {
     agent { label 'maven-agent' }
 
+    environment {
+        APP_SERVER = '172.31.0.182'
+        APP_DIR = '/home/ubuntu/app'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -23,15 +28,19 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to App Server') {
             when {
                 branch 'main'
             }
             steps {
-                echo 'Deploying to App Server...'
+                sshagent(['app-server-ssh']) {
+                    sh '''
+                        scp -i ~/.ssh/jenkins_rsa -o StrictHostKeyChecking=no target/*.jar ubuntu@172.31.0.182:/home/ubuntu/app/app.jar
+                        ssh -i ~/.ssh/jenkins_rsa -o StrictHostKeyChecking=no ubuntu@172.31.0.182 "pkill -f app.jar || true && nohup java -jar /home/ubuntu/app/app.jar > /home/ubuntu/app/app.log 2>&1 &"
+                    '''
+                }
             }
         }
-
     }
 
     post {
