@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                  sh 'mvn clean test -Dexclude=**/*PostgresIntegrationTests.java,**/*MySqlIntegrationTests.java'
+                  sh 'mvn clean test -Dspring.docker.compose.skip.in-tests=true'
             }
         }
 
