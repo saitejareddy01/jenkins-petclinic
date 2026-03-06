@@ -48,7 +48,23 @@ pipeline {
     }
 
     post {
-        success { echo 'Pipeline passed!' }
-        failure { echo 'Pipeline failed!' }
+    success {
+        echo 'Pipeline passed!'
+        emailext(
+            subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            body: "Good news! Build ${env.BUILD_NUMBER} passed successfully.\n\nCheck it here: ${env.BUILD_URL}",
+            to: 'saitejareddy.de@gmail.com'
+        )
+    }
+    failure {
+        echo 'Pipeline failed!'
+        emailext(
+            subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+            body: "Build ${env.BUILD_NUMBER} failed!\n\nCheck it here: ${env.BUILD_URL}",
+            to: 'saitejareddy.de@gmail.com'
+        )
     }
 }
+}
+   
+    
