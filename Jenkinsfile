@@ -20,7 +20,11 @@ pipeline {
                   sh 'mvn clean test -Dspring.docker.compose.skip.in-tests=true'
             }
         }
-
+        stage('Security Scan') {
+             steps {
+                 sh 'trivy fs --exit-code 0 --severity   HIGH,CRITICAL --format table . '
+    }
+}
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
